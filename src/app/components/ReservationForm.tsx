@@ -26,7 +26,7 @@ export default function ReservationForm() {
   const [message, setMessage] = useState<string | null>(null);
 
   function update<K extends keyof FormState>(k: K, v: FormState[K]) {
-    setForm(prev => ({ ...prev, [k]: v }));
+    setForm((prev) => ({ ...prev, [k]: v }));
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -63,28 +63,66 @@ export default function ReservationForm() {
   }
 
   return (
-    <form id="reserve" onSubmit={onSubmit} className="max-w-xl bg-white p-6 rounded-md shadow">
-      <h2 className="text-2xl font-semibold mb-4">Reserve a table</h2>
+    <form
+      id="reserve"
+      onSubmit={onSubmit}
+      className="max-w-xl bg-white p-8 rounded-lg shadow-lg text-black 
+                 dark:bg-neutral-900 dark:text-white border border-[#d4af37]/40"
+    >
+      <h2 className="text-3xl font-serif font-bold mb-6 text-center text-[#d4af37]">
+        Reserve a Table
+      </h2>
 
-      <label className="block mb-2">Name
-        <input required value={form.name} onChange={e => update("name", e.target.value)} className="w-full mt-1 p-2 border rounded" />
-      </label>
+      {/* Input fields */}
+      {[
+        { label: "Name", type: "text", value: form.name, key: "name" },
+        { label: "Email", type: "email", value: form.email, key: "email" },
+        { label: "Phone", type: "text", value: form.phone, key: "phone" },
+      ].map((field) => (
+        <label
+          key={field.key}
+          className="block mb-4 text-sm font-medium text-black dark:text-gray-200"
+        >
+          {field.label}
+          <input
+            required
+            type={field.type}
+            value={field.value}
+            onChange={(e) => update(field.key as keyof FormState, e.target.value)}
+            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                       text-black dark:text-white border-gray-300 dark:border-gray-700
+                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37] 
+                       transition duration-300"
+          />
+        </label>
+      ))}
 
-      <label className="block mb-2">Email
-        <input required type="email" value={form.email} onChange={e => update("email", e.target.value)} className="w-full mt-1 p-2 border rounded" />
-      </label>
-
-      <label className="block mb-2">Phone
-        <input value={form.phone} onChange={e => update("phone", e.target.value)} className="w-full mt-1 p-2 border rounded" />
-      </label>
-
-      <div className="grid grid-cols-2 gap-4 mb-2">
-        <label>Party size
-          <input required type="number" min={1} value={form.partySize} onChange={e => update("partySize", Number(e.target.value))} className="w-full mt-1 p-2 border rounded" />
+      {/* Party size + Area */}
+      <div className="grid grid-cols-2 gap-6 mb-4">
+        <label className="block text-sm font-medium text-black dark:text-gray-200">
+          Party size
+          <input
+            required
+            type="number"
+            min={1}
+            value={form.partySize}
+            onChange={(e) => update("partySize", Number(e.target.value))}
+            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                       text-black dark:text-white border-gray-300 dark:border-gray-700
+                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]
+                       transition duration-300"
+          />
         </label>
 
-        <label>Area
-          <select value={form.area} onChange={e => update("area", e.target.value)} className="w-full mt-1 p-2 border rounded">
+        <label className="block text-sm font-medium text-black dark:text-gray-200">
+          Area
+          <select
+            value={form.area}
+            onChange={(e) => update("area", e.target.value)}
+            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                       text-black dark:text-white border-gray-300 dark:border-gray-700
+                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]transition duration-300"
+          >
             <option>Main Dining</option>
             <option>Sushi Bar</option>
             <option>Koshitsu</option>
@@ -92,20 +130,50 @@ export default function ReservationForm() {
         </label>
       </div>
 
-      <label className="block mb-2">Reservation date & time
-        {/* use native datetime-local for demo */}
-        <input required type="datetime-local" value={form.reservationTime} onChange={e => update("reservationTime", e.target.value)} className="w-full mt-1 p-2 border rounded" />
+      {/* Date & Time */}
+      <label className="block mb-4 text-sm font-medium text-black dark:text-gray-200">
+        Reservation date & time
+        <input
+          required
+          type="datetime-local"
+          value={form.reservationTime}
+          onChange={(e) => update("reservationTime", e.target.value)}
+          className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                     text-black dark:text-white border-gray-300 dark:border-gray-700
+                     focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37] 
+                     transition duration-300"
+        />
       </label>
 
-      <label className="block mb-4">Notes
-        <textarea value={form.notes} onChange={e => update("notes", e.target.value)} className="w-full mt-1 p-2 border rounded" />
+      {/* Notes */}
+      <label className="block mb-6 text-sm font-medium text-black dark:text-gray-200">
+        Notes
+        <textarea
+          value={form.notes}
+          onChange={(e) => update("notes", e.target.value)}
+          className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                     text-black dark:text-white border-gray-300 dark:border-gray-700
+                     focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37] 
+                     transition duration-300"
+        />
       </label>
 
-      <div className="flex items-center gap-4">
-        <button type="submit" disabled={loading} className="px-5 py-2 bg-charcoal text-white rounded">
-          {loading ? "Sending..." : "Request Reservation"}
+      {/* Button + Message */}
+      <div className="flex flex-col items-center gap-4">
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-8 py-3 bg-[#d4af37] text-black font-semibold rounded 
+                     hover:bg-[#c9a236] active:bg-[#b38e2e] 
+                     transition duration-300 shadow-md disabled:opacity-50"
+        >
+          {loading ? "Sending..." : "Book Now"}
         </button>
-        {message && <p className="text-sm text-gray-600">{message}</p>}
+        {message && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
+            {message}
+          </p>
+        )}
       </div>
     </form>
   );

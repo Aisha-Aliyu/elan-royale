@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --text: #171717;
+  --muted: #9EA1A6;
+  --accent: #C9A23E;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #F8F6F4;
-  --text: #0B0B0B;
-  --muted: #9EA1A6;
-  --accent: #C9A23E;
-   --font-inter: 'Inter', sans-serif;
-  --font-playfair: 'Playfair Display', serif;
+    --bg: #0B0B0B;
+    --text: #F8F6F4;
+    --muted: #9EA1A6;
+    --accent: #C9A23E;
   }
 }
 
@@ -20,8 +20,14 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-inter);
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-playfair);
+  color: var(--text);
+}
+
+html {
+  scroll-behavior: smooth;
 }

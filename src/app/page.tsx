@@ -1,20 +1,23 @@
 import Head from "next/head";
+import Navbar from "../app/components/Navbar";
 import Hero from "../app/components/Hero";
-import ReservationForm from "../app/components/ReservationForm";
+import ReservationSection from "../app/components/ReservationSection";
 
 export default function Home() {
   return (
     <>
       <Head>
         <title>ELÁN ROYALE</title>
-        <meta name="description" content="ELÁN ROYALE — refined Edomae tasting menus & private koshitsu rooms." />
+        <meta
+          name="description"
+          content="ELÁN ROYALE — refined Edomae tasting menus & private koshitsu rooms."
+        />
       </Head>
 
       <main>
+        <Navbar />   {/* ✅ top navigation */}
         <Hero />
-        <section className="container mx-auto px-6 py-12">
-          <ReservationForm />
-        </section>
+        <ReservationSection />
       </main>
     </>
   );
