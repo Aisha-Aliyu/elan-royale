@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,13 +9,13 @@ export default function Navbar() {
 
   // Scroll spy
   useEffect(() => {
-    const sections = ["menu", "reserve-section", "gallery", "about", "contact"];
+    const sections = ["menu", "reserve-section", "about", "contact"];
 
     const handleScroll = () => {
-      // navbar bg change
+      // Navbar background change
       setScrolled(window.scrollY > 50);
 
-      // scroll spy
+      // Scroll spy logic
       let current = "menu";
       for (const id of sections) {
         const el = document.getElementById(id);
@@ -34,11 +35,11 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { name: "Menu", id: "menu" },
-    { name: "Reserve", id: "reserve-section" },
-    { name: "Gallery", id: "gallery" },
-    { name: "About", id: "about" },
-    { name: "Contact", id: "contact" },
+    { name: "Menu", id: "../menu", type: "page" },
+    { name: "Reserve", id: "reserve-section", type: "section" },
+    { name: "Gallery", id: "/gallery", type: "page" }, 
+    { name: "About", id: "about", type: "section" },
+    { name: "Contact", id: "contact", type: "section" },
   ];
 
   return (
@@ -49,28 +50,45 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <a href="#" className="text-2xl font-serif tracking-wider">
+        <Link href="/" className="text-2xl font-serif tracking-wider">
           E . <span className="text-[#d4af37]">R</span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 text-sm uppercase tracking-wide">
-          {links.map((link) => (
-            <a
-              key={link.id}
-              href={`#${link.id}`}
-              className={`relative group ${
-                activeSection === link.id ? "text-[#d4af37]" : ""
-              }`}
-            >
-              {link.name}
-              <span
-                className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
-                  activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+          {links.map((link) =>
+            link.type === "page" ? (
+              <Link
+                key={link.id}
+                href={link.id}
+                className={`relative group ${
+                  activeSection === link.id ? "text-[#d4af37]" : ""
                 }`}
-              ></span>
-            </a>
-          ))}
+              >
+                {link.name}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
+                    activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                ></span>
+              </Link>
+            ) : (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className={`relative group ${
+                  activeSection === link.id ? "text-[#d4af37]" : ""
+                }`}
+              >
+                {link.name}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
+                    activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                ></span>
+              </a>
+            )
+          )}
         </nav>
 
         {/* Mobile Hamburger */}
@@ -100,27 +118,44 @@ export default function Navbar() {
               className="self-end text-gray-400 hover:text-white"
             >
               ✕
-            </button>
-
-            {/* Mobile Links */}
+            </button>{/* Mobile Links */}
             <nav className="flex flex-col gap-6 text-lg uppercase tracking-wide">
-              {links.map((link) => (
-                <a
-                  key={link.id}
-                  href={`#${link.id}`}
-                  onClick={() => setIsOpen(false)}
-                  className={`relative group ${
-                    activeSection === link.id ? "text-[#d4af37]" : ""
-                  }`}
-                >
-                  {link.name}
-                  <span
-                    className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
-                      activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+              {links.map((link) =>
+                link.type === "page" ? (
+                  <Link
+                    key={link.id}
+                    href={link.id}
+                    onClick={() => setIsOpen(false)}
+                    className={`relative group ${
+                      activeSection === link.id ? "text-[#d4af37]" : ""
                     }`}
-                  ></span>
-                </a>
-              ))}</nav>
+                  >
+                    {link.name}
+                    <span
+                      className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
+                        activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                    ></span>
+                  </Link>
+                ) : (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    onClick={() => setIsOpen(false)}
+                    className={`relative group ${
+                      activeSection === link.id ? "text-[#d4af37]" : ""
+                    }`}
+                  >
+                    {link.name}
+                    <span
+                      className={`absolute left-0 -bottom-1 h-[2px] bg-[#d4af37] transition-all duration-300 ${
+                        activeSection === link.id ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                    ></span>
+                  </a>
+                )
+              )}
+            </nav>
           </div>
         </div>
       )}

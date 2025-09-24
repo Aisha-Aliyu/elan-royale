@@ -31,3 +31,38 @@ h1, h2, h3, h4 {
 html {
   scroll-behavior: smooth;
 }
+
+/* 🔥 Gold shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Always shimmering gold (for prices) */
+.shimmer-gold {
+  background: linear-gradient(90deg, #d4af37, #f5e1a4, #d4af37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Shimmer only on hover (for dish names) */
+.shimmer-hover {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(90deg, #d4af37, #f5e1a4, #d4af37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: none;
+}
+.shimmer-hover:hover {
+  animation: shimmer 2s linear infinite;
+}
