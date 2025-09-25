@@ -13,22 +13,22 @@ type MenuItem = {
 
 const menuItems: MenuItem[] = [
   // Nigiri
-  { id: 1, name: "Salmon Nigiri", description: "Fresh salmon over pressed sushi rice", price: 800, category: "Nigiri" },
-  { id: 2, name: "Tuna Nigiri", description: "Lean tuna slices on vinegared rice", price: 900, category: "Nigiri" },
-  { id: 3, name: "Eel Nigiri", description: "Grilled eel glazed with sweet unagi sauce", price: 1200, category: "Nigiri" },
-  { id: 4, name: "Shrimp Nigiri", description: "Poached shrimp with wasabi and rice", price: 850, category: "Nigiri" },
-  { id: 5, name: "Tamago Nigiri", description: "Japanese omelette over sushi rice", price: 600, category: "Nigiri" },
+  { id: 1, name: "Salmon Nigiri", description: "Fresh salmon over pressed sushi rice", price: 150, category: "Nigiri" },
+  { id: 2, name: "Tuna Nigiri", description: "Lean tuna slices on vinegared rice", price: 500, category: "Nigiri" },
+  { id: 3, name: "Eel Nigiri", description: "Grilled eel glazed with sweet unagi sauce", price: 200, category: "Nigiri" },
+  { id: 4, name: "Shrimp Nigiri", description: "Poached shrimp with wasabi and rice", price: 250, category: "Nigiri" },
+  { id: 5, name: "Tamago Nigiri", description: "Japanese omelette over sushi rice", price: 100, category: "Nigiri" },
 
   // Sashimi
-  { id: 6, name: "Tuna Sashimi", description: "Delicate slices of premium tuna", price: 1400, category: "Sashimi" },
-  { id: 7, name: "Salmon Sashimi", description: "Buttery salmon slices served raw", price: 1300, category: "Sashimi" },
-  { id: 8, name: "Yellowtail Sashimi", description: "Fresh yellowtail cuts with soy & wasabi", price: 1600, category: "Sashimi" },
+  { id: 6, name: "Tuna Sashimi", description: "Delicate slices of premium tuna", price: 400, category: "Sashimi" },
+  { id: 7, name: "Salmon Sashimi", description: "Buttery salmon slices served raw", price: 300, category: "Sashimi" },
+  { id: 8, name: "Yellowtail Sashimi", description: "Fresh yellowtail cuts with soy & wasabi", price: 600, category: "Sashimi" },
 
   // Maki Rolls
   { id: 9, name: "California Roll", description: "Crab, avocado, cucumber wrapped in rice & seaweed", price: 1000, category: "Maki Roll" },
-  { id: 10, name: "Dragon Roll", description: "Eel, cucumber, topped with avocado & unagi sauce", price: 1600, category: "Maki Roll" },
-  { id: 11, name: "Spicy Tuna Roll", description: "Tuna, chili mayo, cucumber, sesame", price: 1200, category: "Maki Roll" },
-  { id: 12, name: "Rainbow Roll", description: "California roll topped with assorted sashimi", price: 1700, category: "Maki Roll" },
+  { id: 10, name: "Dragon Roll", description: "Eel, cucumber, topped with avocado & unagi sauce", price: 600, category: "Maki Roll" },
+  { id: 11, name: "Spicy Tuna Roll", description: "Tuna, chili mayo, cucumber, sesame", price: 900, category: "Maki Roll" },
+  { id: 12, name: "Rainbow Roll", description: "California roll topped with assorted sashimi", price: 700, category: "Maki Roll" },
   { id: 13, name: "Futomaki", description: "Thick sushi roll with vegetables and egg", price: 1100, category: "Maki Roll" },
 
   // Tempura
@@ -41,8 +41,8 @@ const menuItems: MenuItem[] = [
   { id: 18, name: "Seafood Miso Soup", description: "Rich miso broth with clams and shrimp", price: 700, category: "Soup" },
 
   // Noodles
-  { id: 19, name: "Tonkotsu Ramen", description: "Rich pork broth with noodles, egg & chashu pork", price: 1900, category: "Noodles" },
-  { id: 20, name: "Shoyu Ramen", description: "Soy sauce flavored ramen with pork and egg", price: 1700, category: "Noodles" },
+  { id: 19, name: "Tonkotsu Ramen", description: "Rich pork broth with noodles, egg & chashu pork", price: 900, category: "Noodles" },
+  { id: 20, name: "Shoyu Ramen", description: "Soy sauce flavored ramen with pork and egg", price: 700, category: "Noodles" },
   { id: 21, name: "Zaru Soba", description: "Cold buckwheat noodles with dipping sauce", price: 1200, category: "Noodles" },
   { id: 22, name: "Yakisoba", description: "Stir-fried noodles with vegetables and pork", price: 1600, category: "Noodles" },
 
@@ -55,7 +55,8 @@ const menuItems: MenuItem[] = [
   // Grill
   { id: 27, name: "Beef Yakitori", description: "Grilled skewered beef glazed with tare sauce", price: 1600, category: "Grill" },
   { id: 28, name: "Chicken Yakitori", description: "Grilled chicken skewers with scallions", price: 1400, category: "Grill" },
-  { id: 29, name: "Pork Belly Skewers", description: "Crispy pork belly skewers", price: 1700, category: "Grill" },// Dessert
+  { id: 29, name: "Pork Belly Skewers", description: "Crispy pork belly skewers", price: 1700, category: "Grill" },
+  // Dessert
   { id: 30, name: "Matcha Cheesecake", description: "Creamy green tea cheesecake with biscuit base", price: 900, category: "Dessert" },
 ];
 
@@ -94,7 +95,7 @@ export default function MenuPage() {
       {/* Hero */}
       <section
         className="h-[40vh] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: "url('/images/hero-menu.jpg')" }}
+        style={{ backgroundImage: "url('../images/experience1.JPG')" }}
       >
         <div className="absolute inset-0 bg-black/60"></div>
         <h1 className="relative text-5xl font-serif tracking-wide text-[#d4af37]">
@@ -109,13 +110,16 @@ export default function MenuPage() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full border transition ${
+              className={`px-5 py-2 rounded-full border transition relative ${
                 activeCategory === cat
-                  ? "bg-[#d4af37] text-black border-[#d4af37]"
+                  ? "bg-[#d4af37] text-black border-[#d4af37] shadow-md"
                   : "border-gray-500 text-gray-300 hover:bg-gray-800"
               }`}
             >
               {cat}
+              {activeCategory === cat && (
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-[2px] bg-[#d4af37]"></span>
+              )}
             </button>
           ))}
         </div>

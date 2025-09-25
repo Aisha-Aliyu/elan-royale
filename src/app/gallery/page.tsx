@@ -97,7 +97,7 @@ export default function GalleryPage() {
       {/* Hero */}
       <section
         className="h-[50vh] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: "url('/images/hero-gallery.jpg')" }}
+        style={{ backgroundImage: "url('../images/experience7.JPG')" }}
       >
         <div className="absolute inset-0 bg-black/60"></div>
         <h1 className="relative text-5xl font-serif tracking-wide text-accentGold">Gallery</h1>
