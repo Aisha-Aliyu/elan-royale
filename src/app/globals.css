@@ -3,37 +3,41 @@
 :root {
   --bg: #ffffff;
   --text: #171717;
-  --muted: #9EA1A6;
-  --accent: #C9A23E;
+  --muted: #9ea1a6;
+  --accent: #c9a23e;
+
+  --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+  --font-serif: var(--font-playfair, ui-serif, Georgia, serif);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0B0B0B;
-    --text: #F8F6F4;
-    --muted: #9EA1A6;
-    --accent: #C9A23E;
+    --bg: #0b0b0b;
+    --text: #f8f6f4;
+    --muted: #a3a6aa; 
+    --accent: #c9a23e;
   }
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-inter);
-  line-height: 1.6;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-playfair);
-  color: var(--text);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Gold shimmer animation */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--text);
+}
+
+/* Gold shimmer animation */
 @keyframes shimmer {
   0% {
     background-position: -200% center;
@@ -51,6 +55,7 @@ html {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmer 2s linear infinite;
+  will-change: background-position;
 }
 
 /* Shimmer only on hover (for dish names) */
@@ -63,7 +68,9 @@ html {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: none;
+  will-change: background-position;
 }
+
 .shimmer-hover:hover {
   animation: shimmer 2s linear infinite;
 }

@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
-import router from "next/router";
+import { useRouter } from "next/navigation";
+
 
 type ImageType = {
   src: string;
@@ -42,10 +43,14 @@ export default function GalleryPage() {
   const [visibleImages, setVisibleImages] = useState<ImageType[]>([]);
   const [, setPage] = useState(1);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   const itemsPerPage = 9;
 
-  // ✅ Memoize filtered images so it doesn’t recreate on every render
+  // Memoized categories
+  const categories = useMemo(() => ["all", "food", "interior", "experience"], []);
+
+  // Memoized filtered images
   const filtered = useMemo(
     () => (activeTab === "all" ? allImages : allImages.filter((img) => img.category === activeTab)),
     [activeTab]
@@ -70,7 +75,7 @@ export default function GalleryPage() {
     });
   }, [filtered, visibleImages.length]);
 
-  // Intersection Observer (runs once, watches loadMore)
+  // Intersection Observer
   useEffect(() => {
     if (!loadMoreRef.current) return;
     const observer = new IntersectionObserver(
@@ -90,33 +95,39 @@ export default function GalleryPage() {
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
-
-  return (
+  }, []);return (
     <main className="min-h-screen bg-neutral-950 text-white">
       {/* Hero */}
-      <section
-        className="h-[50vh] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: "url('../images/experience7.JPG')" }}
-      >
+      <section className="h-[50vh] relative flex items-center justify-center overflow-hidden">
+        <Image
+          src="/images/experience7.JPG"
+          alt="Gallery Hero"
+          fill
+          priority
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-black/60"></div>
         <h1 className="relative text-5xl font-serif tracking-wide text-accentGold">Gallery</h1>
 
         {/* Back button */}
-      <button
-        onClick={() => router.back()}
-        className="fixed top-6 left-6 w-12 h-12 rounded-full bg-[#d4af37] text-black flex items-center justify-center shadow-lg hover:scale-110 transition duration-300 z-50"
-      >
-        ←
-      </button>
+        <button
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="fixed top-6 left-6 w-12 h-12 rounded-full bg-[#d4af37] text-black flex items-center justify-center shadow-lg hover:scale-110 transition duration-300 z-50"
+        >
+          ←
+        </button>
       </section>
 
       {/* Tabs */}
       <section className="container mx-auto px-6 pt-12">
-        <div className="flex justify-center gap-8 text-sm uppercase tracking-widest mb-10">
-          {["all", "food", "interior", "experience"].map((tab) => (
+        <div className="flex justify-center gap-8 text-sm uppercase tracking-widest mb-10" role="tablist">
+          {categories.map((tab) => (
             <button
               key={tab}
+              role="tab"
+              aria-selected={activeTab === tab}
+              aria-label={`Show ${tab} images`}
               onClick={() => setActiveTab(tab as typeof activeTab)}
               className={`relative pb-2 transition ${
                 activeTab === tab ? "text-accentGold" : "text-gray-400 hover:text-white"
@@ -147,7 +158,7 @@ export default function GalleryPage() {
               >
                 <Image
                   src={img.src}
-                  alt={`Gallery ${i + 1}`}
+                  alt={`Gallery image ${i + 1}`}
                   width={img.width}
                   height={img.height}
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -177,21 +188,17 @@ export default function GalleryPage() {
           className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 animate-fadeIn"
           role="dialog"
           aria-modal="true"
-          onClick={() => setSelected(null)}
         >
-          {/* Close Button (kept GOLD) */}
+          {/* Close Button */}
           <button
+            aria-label="Close lightbox"
             className="absolute top-6 right-6 flex items-center justify-center w-12 h-12 rounded-full border border-accentGold text-accentGold text-xl font-bold hover:bg-accentGold hover:text-black transition duration-300"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelected(null);
-            }}
+            onClick={() => setSelected(null)}
           >
             ✕
-          </button>
-          <Image
+          </button><Image
             src={selected}
-            alt="Selected"
+            alt="Selected gallery image"
             width={1200}
             height={800}
             className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg object-contain animate-zoomIn"

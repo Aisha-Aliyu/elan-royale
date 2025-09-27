@@ -8,14 +8,15 @@ export default function Home() {
     <>
       <Head>
         <title>ELÁN ROYALE</title>
-        <meta
-          name="description"
-          content="ELÁN ROYALE — refined Edomae tasting menus & private koshitsu rooms."
-        />
+  <meta
+    name="ELÁN ROYALE — Fine Dining Restaurant"
+    content="ELÁN ROYALE offers a refined Edomae tasting menu and private 
+    koshitsu dining rooms for an unforgettable culinary experience."
+  />
       </Head>
 
       <main>
-        <Navbar />   {/* ✅ top navigation */}
+        <Navbar />   {/* top navigation */}
         <Hero />
         <ReservationSection />
       </main>

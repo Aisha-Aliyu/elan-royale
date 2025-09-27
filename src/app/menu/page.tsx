@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, LazyMotion, domAnimation } from "framer-motion";
+
 
 type MenuItem = {
   id: number;
@@ -56,6 +57,7 @@ const menuItems: MenuItem[] = [
   { id: 27, name: "Beef Yakitori", description: "Grilled skewered beef glazed with tare sauce", price: 1600, category: "Grill" },
   { id: 28, name: "Chicken Yakitori", description: "Grilled chicken skewers with scallions", price: 1400, category: "Grill" },
   { id: 29, name: "Pork Belly Skewers", description: "Crispy pork belly skewers", price: 1700, category: "Grill" },
+
   // Dessert
   { id: 30, name: "Matcha Cheesecake", description: "Creamy green tea cheesecake with biscuit base", price: 900, category: "Dessert" },
 ];
@@ -75,86 +77,104 @@ const categories = [
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("Show All");
+  const [showScroll, setShowScroll] = useState(false);
   const router = useRouter();
 
-  const filtered =
-    activeCategory === "Show All"
-      ? menuItems
-      : menuItems.filter((item) => item.category === activeCategory);
+  const filtered = useMemo(
+    () =>
+      activeCategory === "Show All"
+        ? menuItems
+        : menuItems.filter((item) => item.category === activeCategory),
+    [activeCategory]
+  );
+
+  // Show back-to-top after scrolling
+  useEffect(() => {
+    const handleScroll = () => setShowScroll(window.scrollY > 400);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      {/* Back button */}
-      <button
-        onClick={() => router.back()}
-        className="fixed top-6 left-6 w-12 h-12 rounded-full bg-[#d4af37] text-black flex items-center justify-center shadow-lg hover:scale-110 transition duration-300 z-50"
-      >
-        ←
-      </button>
+    <LazyMotion features={domAnimation}>
+      <main className="min-h-screen bg-neutral-950 text-white">
+        {/* Back button */}
+        <button
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="fixed top-6 left-6 w-12 h-12 rounded-full bg-[#d4af37] text-black flex items-center justify-center shadow-lg hover:scale-110 transition duration-300 z-50"
+        >
+          ←
+        </button>
 
-      {/* Hero */}
-      <section
-        className="h-[40vh] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: "url('../images/experience1.JPG')" }}
-      >
-        <div className="absolute inset-0 bg-black/60"></div>
-        <h1 className="relative text-5xl font-serif tracking-wide text-[#d4af37]">
-          Menu
-        </h1>
-      </section>
+        {/* Hero */}
+        <section
+          className="h-[40vh] bg-cover bg-center flex items-center justify-center relative"
+          style={{ backgroundImage: "url('../images/experience1.JPG')" }}
+        >
+          <div className="absolute inset-0 bg-black/60"></div>
+          <h1 className="relative text-5xl font-serif tracking-wide text-[#d4af37]">
+            Menu
+          </h1>
+        </section>
 
-      {/* Categories */}
-      <section className="container mx-auto px-6 py-10">
-        <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full border transition relative ${
-                activeCategory === cat
-                  ? "bg-[#d4af37] text-black border-[#d4af37] shadow-md"
-                  : "border-gray-500 text-gray-300 hover:bg-gray-800"
-              }`}
+        {/* Categories */}
+        <section className="sticky top-0 z-40 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800">
+          <div className="container mx-auto px-6 py-4 flex flex-wrap gap-3 justify-center">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                aria-label={`Filter by ${cat}`}
+                className={`px-5 py-2 rounded-full border transition relative ${
+                  activeCategory === cat
+                    ? "bg-[#d4af37] text-black border-[#d4af37] shadow-md"
+                    : "border-gray-500 text-gray-300 hover:bg-gray-800"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Menu Items */}
+        <section className="container mx-auto px-6 pb-16 max-w-3xl">
+          {filtered.map((item, i) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.03 }}
+              className="mb-6"
             >
-              {cat}
-              {activeCategory === cat && (
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-[2px] bg-[#d4af37]"></span>
+              <div className="flex items-center">
+                <span className="text-lg font-semibold text-[#d4af37] shimmer-hover transition duration-500">
+                  {item.name}
+                </span>
+                <div className="flex-1 border-b border-dotted border-gray-600 mx-3"></div>
+                <span className="text-lg font-semibold shimmer-gold whitespace-nowrap">
+                  ¥{item.price.toLocaleString()}
+                </span>
+              </div>
+              {item.description && (
+                <p className="text-sm text-gray-400 mt-1">{item.description}</p>
               )}
-            </button>
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </section>
 
-      {/* Menu Items */}
-      <section className="container mx-auto px-6 pb-16 max-w-3xl">
-        {filtered.map((item, i) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: i * 0.05 }}
-            className="mb-6"
+        {/* Back-to-Top */}
+        {showScroll && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Back to top"className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-[#d4af37] text-black shadow-lg hover:scale-110 transition duration-300"
           >
-            <div className="flex items-center">
-              {/* Dish name shimmer on hover */}
-              <span className="text-lg font-semibold text-[#d4af37] shimmer-hover transition duration-500">
-                {item.name}
-              </span>
-
-              <div className="flex-1 border-b border-dotted border-gray-600 mx-3"></div>
-
-              {/* Price shimmer always */}
-              <span className="text-lg font-semibold shimmer-gold whitespace-nowrap">
-                ¥{item.price.toLocaleString()}
-              </span>
-            </div>
-            {item.description && (
-              <p className="text-sm text-gray-400 mt-1">{item.description}</p>
-            )}
-          </motion.div>
-        ))}
-      </section>
-    </main>
+            ↑
+          </button>
+        )}
+      </main>
+    </LazyMotion>
   );
 }

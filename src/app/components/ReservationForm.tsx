@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 
 type FormState = {
   name: string;
@@ -12,45 +12,92 @@ type FormState = {
   notes: string;
 };
 
+const initialForm: FormState = {
+  name: "",
+  email: "",
+  phone: "",
+  partySize: 2,
+  reservationTime: "",
+  area: "Main Dining",
+  notes: "",
+};
+
+// Static config (prevents re-creation on each render)
+const textFields = [
+  { label: "Name", type: "text", key: "name" },
+  { label: "Email", type: "email", key: "email" },
+  { label: "Phone", type: "text", key: "phone" },
+] as const;
+
+// ✅ Memoized Input component to reduce re-renders
+const TextInput = memo(function TextInput({
+  label,
+  type,
+  value,
+  onChange,
+}: {
+  label: string;
+  type: string;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <label className="block mb-4 text-sm font-medium text-black dark:text-gray-200">
+      {label}
+      <input
+        required
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label={label}
+        className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+                   text-black dark:text-white border-gray-300 dark:border-gray-700
+                   focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37] 
+                   transition duration-300"
+      />
+    </label>
+  );
+});
+
 export default function ReservationForm() {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    email: "",
-    phone: "",
-    partySize: 2,
-    reservationTime: "",
-    area: "Main Dining",
-    notes: "",
-  });
+  const [form, setForm] = useState<FormState>(initialForm);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  function update<K extends keyof FormState>(k: K, v: FormState[K]) {
+  const update = useCallback(<K extends keyof FormState>(k: K, v: FormState[K]) => {
     setForm((prev) => ({ ...prev, [k]: v }));
+  }, []);
+
+  // ✅ Basic validation before sending request
+  function validateForm(): string | null {
+    if (!form.name.trim()) return "Name is required";
+    if (!/\S+@\S+\.\S+/.test(form.email)) return "Invalid email format";
+    if (!/^[0-9+\-\s()]{6,15}$/.test(form.phone)) return "Invalid phone number";
+    if (!form.reservationTime) return "Please select a reservation time";
+    return null;
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setMessage(null);
+
+    const error = validateForm();
+    if (error) {
+      setMessage(error);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await fetch("/api/reservations", {
+      const res = await fetch("/api/reservation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Submission failed");
-      setMessage("Reservation received! Check your email for confirmation (demo)");
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        partySize: 2,
-        reservationTime: "",
-        area: "Main Dining",
-        notes: "",
-      });
+      setMessage("Reservation received! Check your email for confirmation (demo).");
+      setForm(initialForm);
     } catch (err: unknown) {
       setMessage(
         typeof err === "object" && err !== null && "message" in err
@@ -73,28 +120,15 @@ export default function ReservationForm() {
         Reserve a Table
       </h2>
 
-      {/* Input fields */}
-      {[
-        { label: "Name", type: "text", value: form.name, key: "name" },
-        { label: "Email", type: "email", value: form.email, key: "email" },
-        { label: "Phone", type: "text", value: form.phone, key: "phone" },
-      ].map((field) => (
-        <label
+      {/* Text Fields */}
+      {textFields.map((field) => (
+        <TextInput
           key={field.key}
-          className="block mb-4 text-sm font-medium text-black dark:text-gray-200"
-        >
-          {field.label}
-          <input
-            required
-            type={field.type}
-            value={field.value}
-            onChange={(e) => update(field.key as keyof FormState, e.target.value)}
-            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
-                       text-black dark:text-white border-gray-300 dark:border-gray-700
-                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37] 
-                       transition duration-300"
-          />
-        </label>
+          label={field.label}
+          type={field.type}
+          value={form[field.key]}
+          onChange={(val) => update(field.key, val)}
+        />
       ))}
 
       {/* Party size + Area */}
@@ -106,8 +140,7 @@ export default function ReservationForm() {
             type="number"
             min={1}
             value={form.partySize}
-            onChange={(e) => update("partySize", Number(e.target.value))}
-            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+            onChange={(e) => update("partySize", Number(e.target.value))}className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
                        text-black dark:text-white border-gray-300 dark:border-gray-700
                        focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]
                        transition duration-300"
@@ -121,7 +154,8 @@ export default function ReservationForm() {
             onChange={(e) => update("area", e.target.value)}
             className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
                        text-black dark:text-white border-gray-300 dark:border-gray-700
-                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]transition duration-300"
+                       focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]
+                       transition duration-300"
           >
             <option>Main Dining</option>
             <option>Sushi Bar</option>
@@ -162,7 +196,7 @@ export default function ReservationForm() {
       <div className="flex flex-col items-center gap-4">
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !form.name || !form.email || !form.phone}
           className="px-8 py-3 bg-[#d4af37] text-black font-semibold rounded 
                      hover:bg-[#c9a236] active:bg-[#b38e2e] 
                      transition duration-300 shadow-md disabled:opacity-50"

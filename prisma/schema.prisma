@@ -7,15 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReservationStatus {
+  pending
+  confirmed
+  cancelled
+}
+
 model Reservation {
-  id               String   @id @default(uuid())
-  name             String
-  email            String
-  phone            String?
-  partySize        Int
-  reservationTime  DateTime
-  area             String?      // 'Main Dining', 'Sushi Bar', 'Koshitsu'
-  status           String   @default("pending")
-  notes            String?
-  createdAt        DateTime @default(now())
+  id              String             @id @default(uuid())
+  name            String
+  email           String
+  phone           String?
+  partySize       Int
+  reservationTime DateTime
+  area            String?            // e.g. 'Main Dining', 'Sushi Bar', 'Koshitsu'
+  status          ReservationStatus  @default(pending)
+  notes           String?
+  createdAt       DateTime           @default(now())
+
+  @@index([email])
+  @@index([reservationTime])
+  @@index([status])
 }
