@@ -89,15 +89,38 @@ export default function ReservationForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/reservation", {
+      // 1️⃣ Save reservation first
+      const res = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Submission failed");
-      setMessage("Reservation received! Check your email for confirmation (demo).");
-      setForm(initialForm);
+      if (!res.ok) {
+        throw new Error((data.error ? data.error + " " : "") + "Submission failed");
+      }
+
+      // 2️⃣ Create Stripe Checkout Session
+      const paymentRes = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reservationId: data.id || data.reservation?.id, // ✅ safer fallback
+          amount: 5000, // ¥5000 deposit
+          email: form.email, // ✅ send email for confirmation
+        }),
+      });
+
+      const paymentData = await paymentRes.json();
+      console.log("Stripe response:", paymentData);
+
+      if (paymentRes.ok && paymentData.url) {
+        window.location.href = paymentData.url; // ✅ redirect to Stripe Checkout
+        return;
+      } else {
+        throw new Error("Failed to start payment process");
+      }
     } catch (err: unknown) {
       setMessage(
         typeof err === "object" && err !== null && "message" in err
@@ -140,7 +163,8 @@ export default function ReservationForm() {
             type="number"
             min={1}
             value={form.partySize}
-            onChange={(e) => update("partySize", Number(e.target.value))}className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
+            onChange={(e) => update("partySize", Number(e.target.value))}
+            className="w-full mt-1 p-3 border rounded bg-white dark:bg-neutral-800 
                        text-black dark:text-white border-gray-300 dark:border-gray-700
                        focus:border-[#d4af37] focus:ring-2 focus:ring-[#d4af37]
                        transition duration-300"

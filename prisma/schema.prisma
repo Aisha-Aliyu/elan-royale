@@ -14,18 +14,31 @@ enum ReservationStatus {
 }
 
 model Reservation {
-  id              String             @id @default(uuid())
+  id              String            @id @default(uuid())
   name            String
   email           String
   phone           String?
   partySize       Int
   reservationTime DateTime
-  area            String?            // e.g. 'Main Dining', 'Sushi Bar', 'Koshitsu'
-  status          ReservationStatus  @default(pending)
+  area            String?
+  status          ReservationStatus @default(pending)
   notes           String?
-  createdAt       DateTime           @default(now())
+  createdAt       DateTime          @default(now())
+
+  // relation back to Payment
+  payments Payment[]
 
   @@index([email])
   @@index([reservationTime])
   @@index([status])
+}
+
+model Payment {
+  id            String      @id @default(uuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  amount        Int
+  currency      String      @default("JPY")
+  status        String      @default("pending")
+  createdAt     DateTime    @default(now())
 }
