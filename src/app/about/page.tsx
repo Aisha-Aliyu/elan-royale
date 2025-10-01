@@ -121,17 +121,17 @@ export default function AboutPage() {
       {
         name: "Chef Hiroshi Tanaka",
         role: "Executive Chef",
-        img: "/images/chef1.jpg",
+        img: "/images/chef1.JPG",
       },
       {
         name: "Chef Ayaka Sato",
         role: "Sushi Artisan",
-        img: "/images/chef2.jpg",
+        img: "/images/chef2.JPG",
       },
       {
         name: "Chef Kenji Nakamura",
         role: "Tempura Master",
-        img: "/images/chef3.jpg",
+        img: "/images/chef3.JPG",
       },
     ].map((chef, i) => (
       <motion.div
