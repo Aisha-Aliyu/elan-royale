@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ type Reservation = {
   notes?: string;
 };
 
-export default function ConfirmationPage() {
+function ConfirmationContent() {
   const params = useSearchParams();
   const success = params?.get("success");
   const canceled = params?.get("canceled");
@@ -93,4 +94,12 @@ export default function ConfirmationPage() {
   }
 
   return null;
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={<div className="text-center p-10">Loading...</div>}>
+      <ConfirmationContent />
+    </Suspense>
+  );
 }
