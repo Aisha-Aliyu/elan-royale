@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section
       className="relative min-h-[70vh] flex items-center justify-center bg-cover bg-center text-white"
-      style={{ backgroundImage: "url('/images/hero.jpg')" }}
+      style={{ backgroundImage: "url('/images/hero.JPG')" }}
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
